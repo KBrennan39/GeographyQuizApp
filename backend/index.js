@@ -13,17 +13,49 @@ app.use(express.json());
 
 
 app.get("/getQuestion", async (req, res) =>{
-    // const { difficulty } = req.query.toString();
+    // const { difficulty } = req.query;
 
     // const validDifficulties = ['easy', 'medium', 'hard'];
     // if (!validDifficulties.includes(difficulty)) {
     //     return res.status(400).json({ error: "Invalid difficulty level" });
     // }
+
+    const desiredCategory = "geography";
+    const desiredQuestionCount = 10;
+    let geographyQuestions = [];
+    console.log("hi");
     try{
 
-        const response = await axios.get('https://opentdb.com/api.php?amount=10&category=22&type=multiple')
-        res.json(response.data);
-        console.log(response);
+        // const response = await axios.get('https://the-trivia-api.com/v2/questions');
+
+        // res.json(response.data)
+        // console.log(response.data);
+
+
+        while (geographyQuestions.length < desiredQuestionCount) {
+            //print("hi");
+            const response = await axios.get('https://the-trivia-api.com/v2/questions');
+            for (const question of response.data) {
+                // Log the category for each question
+                console.log("Question Category:", question.category);
+                
+                // Check if the category matches and add to the list
+                if (question.category && question.category.toLowerCase() === desiredCategory.toLowerCase()) {
+                    geographyQuestions.push(question);
+                    //print(question);
+                }
+
+                // Break the loop if we have enough questions
+                if (geographyQuestions.length >= desiredQuestionCount) {
+                    break;
+                }
+            }
+        }
+
+        // If we have more than the desired number of questions, slice the array
+        geographyQuestions = geographyQuestions.slice(0, desiredQuestionCount);
+        res.json(geographyQuestions);
+        console.log(geographyQuestions);
     }
     catch (error){
         console.error("Error making API request:", error.message || error);

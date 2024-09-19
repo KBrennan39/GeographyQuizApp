@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import './style.css';
+const axios = require("axios");
 
 function App() {
-  const [questions, setQuestions] = useState([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [questions, setQuestions] = useState(undefined);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(undefined);
   const [userAnswer, setUserAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0)
@@ -11,6 +12,7 @@ function App() {
   const [highScores, setHighScores] = useState([]);
   const [questionsAnswered, updateQuestionsAnswered] = useState(0);
   const [answers, setAnswers] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
 
   // const [difficulty, setDifficulty] = useState(null); // New state for difficulty
   // const [isDifficultySelected, setIsDifficultySelected] = useState(false); // New state to toggle between pages
@@ -20,19 +22,20 @@ function App() {
     console.log("Entering getQuestions function");
     //if (!difficulty) return;
     try {
-      const response = await fetch("http://localhost:3001/getQuestion");
-
-      console.log("response: "+response);
+      //console.log("difficulty:" + difficulty);
+      const response = await fetch("http://localhost:3001/getQuestion?");
       const data = await response.json();
-      console.log("data:" + data.results)
+      console.log("response: "+JSON.stringify(data[0]));
+      //const data = await response.json();
+      //console.log("data:" + data.results)
 
-      if (Array.isArray(data.results)) {
-        console.log("data:" + data.results)
-        setQuestions(data.results);
+      if (Array.isArray(data)) {
+        //console.log("data:" + data.results)
+        setQuestions(data);
         setCurrentQuestionIndex(0);
         setShowPlayAgain(false);
       } else {
-        console.error("Unexpected API response structure:", data);
+        console.error("Unexpected API response structure:");
       } 
       
     } catch (error) {
@@ -46,6 +49,14 @@ function App() {
     getQuestions();
     console.log("1. Fetched questions")
   }, []);
+  useEffect(() => {
+    if (questions){
+      setCurrentQuestion(questions[currentQuestionIndex])
+      const question = questions[currentQuestionIndex];
+      console.log("current question: "+question);
+      setAnswers([...question.incorrectAnswers, question.correctAnswer].sort(() => Math.random() - 0.5));
+    }
+  }, [currentQuestionIndex])
   useEffect(() => {
     console.log("answers:" + answers);
   }, [answers]);
@@ -83,9 +94,9 @@ function App() {
 
   const handleAnswerClick = (answer) => {
     setUserAnswer(answer);
-    setIsCorrect(answer === questions[currentQuestionIndex].correct_answer);
+    setIsCorrect(answer === questions[currentQuestionIndex].correctAnswer);
     updateQuestionsAnswered(questionsAnswered + 1);
-    if (answer === questions[currentQuestionIndex].correct_answer){
+    if (answer === questions[currentQuestionIndex].correctAnswer){
       setScore(score+1);
     }
   };
@@ -141,15 +152,12 @@ function App() {
     const cleanedString = input.toString().replace(regex, '');
     return cleanedString.replace(/quot/gi, '');
   }
-  const question = questions[currentQuestionIndex];
-  //setAnswers([...question.incorrect_answers, question.correct_answer].sort(() => Math.random() - 0.5));
 
 
   return (
     <div className="App">
       <h1>Quiz App</h1>
-      {/* <h2>{clean(question.question)}</h2>  */}
-      {/* {score === 0 ? <h3> zero </h3>:<h3> not zero</h3>} */}
+      { <h2>{currentQuestion ? currentQuestion.question.text : ""}</h2>  }
       <div>
 
         {answers.map((answer, index) => (
@@ -174,7 +182,7 @@ function App() {
       {userAnswer && (
         <div>
           <p>You selected: {userAnswer}</p>
-          <p>{isCorrect ? "Correct!" : "Incorrect. The correct answer was "+question.correct_answer}</p>
+          <p>{isCorrect ? "Correct!" : "Incorrect. The correct answer was "+currentQuestion.correctAnswer}</p>
 
         </div>
       )}
