@@ -20,6 +20,7 @@ function App() {
   const [gameType, setGameType] = useState(null);
   const [loading, setLoading] = useState(false); 
   const [timerWidth, setTimerWidth] = useState("100%");
+  const [hintUsed, setHintUsed] = useState(false);
 
 
 
@@ -29,7 +30,7 @@ function App() {
       timerRef.current = setInterval(() => {
         setTimeLeft(prev => {
           const newTimeLeft = prev - 1;
-          setTimerWidth(`${(newTimeLeft / 15) * 100}%`); // Update width immediately
+          setTimerWidth(`${(newTimeLeft / 15) * 100}%`); 
           return newTimeLeft;
         });
       }, 1000);
@@ -37,7 +38,6 @@ function App() {
     } else {
       clearInterval(timerRef.current);
       if (timeLeft === 0) {
-        // Treat time running out as an incorrect answer
         
         computerResponse();
         setUserAnswer(null);
@@ -47,7 +47,7 @@ function App() {
       }
     }
 
-    return () => clearInterval(timerRef.current); // Cleanup timer on component unmount
+    return () => clearInterval(timerRef.current); 
   }, [timeLeft, userAnswer]);
 
   const getQuestions = async () => {
@@ -100,7 +100,7 @@ function App() {
       console.log("current question: "+question);
       setAnswers([...question.incorrectAnswers, question.correctAnswer].sort(() => Math.random() - 0.5));
       setTimeLeft(15);
-      setUserAnswer(null); // Reset user answer when loading a new question
+      setUserAnswer(null); 
       setIsCorrect(null);
       setComputerAnswer(null);
       setTimerWidth("100%");
@@ -111,7 +111,16 @@ function App() {
   }, [answers]);
 
 
-
+  const useHint = () => {
+    if (!hintUsed && answers.length > 2) { 
+      const incorrectAnswers = answers.filter(answer => answer !== currentQuestion.correctAnswer);
+      const randomIndex = Math.floor(Math.random() * incorrectAnswers.length);
+      const hintAnswer = incorrectAnswers[randomIndex];
+  
+      setAnswers(prevAnswers => prevAnswers.filter(answer => answer !== hintAnswer)); 
+      setHintUsed(true); 
+    }
+  };
 
 
   const handleAnswerClick = (answer) => {
@@ -121,7 +130,6 @@ function App() {
     if (answer === questions[currentQuestionIndex].correctAnswer){
       setScore(score+1);
     }
-    //const randomIndex = Math.floor(Math.random() * answers.length);
     if (gameType==="Computer Opponent"){
       computerResponse();
     }
@@ -160,6 +168,7 @@ function App() {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setTimeLeft(15);
       setTimerWidth("100%");
+      setHintUsed(false);
     } else {
       // All questions have been answered
       setHighScores(prevScores => {
@@ -199,6 +208,7 @@ function App() {
     setUserAnswer(null);
     setTimeLeft(15);
     setTimerWidth("100%");
+    setHintUsed(false);
     
   };
 
@@ -273,7 +283,10 @@ function App() {
           ))}
       
         </div>
+
         <div>
+          <button onClick={useHint} disabled={hintUsed || userAnswer !== null}>Hint</button>
+
           <button
             onClick={nextQuestion}
             disabled={userAnswer === null && timeLeft > 0} 
@@ -311,16 +324,18 @@ function App() {
       {<h3>Difficulty: {currentQuestion ? currentQuestion.difficulty : ""} | Time Left: {timeLeft}s</h3>}
       <div>
         {answers.map((answer, index) => (
-          <button
-            key={index}
-            onClick={() => handleAnswerClick(answer)}
-            disabled={userAnswer !== null || timeLeft === 0}
-          >
-            {answer}
-          </button>
-        ))}
+              <button
+                key={index}
+                onClick={() => handleAnswerClick(answer)}
+                disabled={userAnswer !== null || timeLeft === 0} 
+              >
+                {answer}
+              </button>
+            ))}
       </div>
       <div>
+        <button onClick={useHint} disabled={hintUsed || userAnswer !== null}>Hint</button>
+
         <button
           onClick={nextQuestion}
           disabled={userAnswer === null && timeLeft > 0}
@@ -360,7 +375,7 @@ function App() {
       renderLoadingPage()) : !gameType ? (
 
         <>
-          <p style={{ marginBottom: '30px'}}><b>Directions:</b> For each round, you will be given 10 questions which you have 15 seconds each to answer. You can choose to play by yourself or against a computer opponent. The questions get harder as you go, so good luck! Check the leaderboard at the end to see your progress!</p>
+          <p style={{ marginBottom: '30px'}}><b>Directions:</b> For each round, you will be given 10 questions which you have 15 seconds each to answer. You can choose to play by yourself or against a computer opponent. The questions get harder as you go, but you can always use a hint to eliminate one of the answer choices. Check the leaderboard at the end to see your progress!</p>
 
           <button onClick={() => setGameType("Single Player")}>Single Player</button>
           <button onClick={() => setGameType("Computer Opponent")}>Play Against Computer</button>
