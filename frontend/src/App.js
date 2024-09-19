@@ -18,20 +18,30 @@ function App() {
   const [timeLeft, setTimeLeft] = useState(15);
   const timerRef = useRef(null);
   const [gameType, setGameType] = useState(null);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false); 
+  const [timerWidth, setTimerWidth] = useState("100%");
 
 
-  //timer useeffect
 
   useEffect(() => {
     if (timeLeft > 0 && !userAnswer) {
-      timerRef.current = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+
+      timerRef.current = setInterval(() => {
+        setTimeLeft(prev => {
+          const newTimeLeft = prev - 1;
+          setTimerWidth(`${(newTimeLeft / 15) * 100}%`); // Update width immediately
+          return newTimeLeft;
+        });
+      }, 1000);
+
     } else {
       clearInterval(timerRef.current);
       if (timeLeft === 0) {
         // Treat time running out as an incorrect answer
+        
         computerResponse();
         setUserAnswer(null);
+        setTimerWidth("0%");
         setIsCorrect(false);
         updateQuestionsAnswered(questionsAnswered + 1);
       }
@@ -67,6 +77,11 @@ function App() {
     console.log(questions);
 
   };
+  const renderTimerBar = () => (
+    <div className="timer-bar-container">
+      <div className="timer-bar" style={{ width: timerWidth }} />
+    </div>
+  );
   const renderLoadingPage = () => (
     <div className="loading-page">
       <h2>Loading questions...</h2>
@@ -88,6 +103,7 @@ function App() {
       setUserAnswer(null); // Reset user answer when loading a new question
       setIsCorrect(null);
       setComputerAnswer(null);
+      setTimerWidth("100%");
     }
   }, [currentQuestionIndex, questions])
   useEffect(() => {
@@ -143,6 +159,7 @@ function App() {
       setIsCorrect(null);
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setTimeLeft(15);
+      setTimerWidth("100%");
     } else {
       // All questions have been answered
       setHighScores(prevScores => {
@@ -181,6 +198,7 @@ function App() {
     setComputerScore(0);
     setUserAnswer(null);
     setTimeLeft(15);
+    setTimerWidth("100%");
     
   };
 
@@ -237,8 +255,11 @@ function App() {
     return(
       <div className="App">
         <h2>Single Player Game</h2>
+        
         { <h2 className="question">{currentQuestion ? currentQuestion.question.text : ""}</h2>  }
-        {<h3>Difficulty: {currentQuestion ? currentQuestion.difficulty : ""}</h3>}
+        {renderTimerBar()}
+        {<h3>Difficulty: {currentQuestion ? currentQuestion.difficulty : ""} | Time Left: {timeLeft}s</h3>}
+
         <div>
 
           {answers.map((answer, index) => (
@@ -286,7 +307,8 @@ function App() {
     <div className="App">
       <h2>User vs Computer</h2>
       <h2 className="question">{currentQuestion ? currentQuestion.question.text : ""}</h2>
-      <h3>Difficulty: {currentQuestion ? currentQuestion.difficulty : ""}</h3>
+      {renderTimerBar()}
+      {<h3>Difficulty: {currentQuestion ? currentQuestion.difficulty : ""} | Time Left: {timeLeft}s</h3>}
       <div>
         {answers.map((answer, index) => (
           <button
@@ -326,25 +348,29 @@ function App() {
       <h2>User Score: {score>0&&questionsAnswered>0 ? <b style={{ color: 'green'}}>{score}</b> : <b style={{ color: 'red'}}>{score}</b>} <b>/ {questionsAnswered}</b> correct</h2>
       <h2>Computer Score: {computerScore>0&&questionsAnswered>0 ? <b style={{ color: 'green'}}>{computerScore}</b> : <b style={{ color: 'red'}}>{computerScore}</b>} <b>/ {questionsAnswered}</b> correct</h2>
 
-      {/* <h2>Computer Score: {score>0 ? <h2 style={{ color: 'green'}}>{computerScore}</h2> : <h2 style={{ color: 'red'}}>{computerScore}</h2>} / {questionsAnswered} correct</h2> */}
-
-      {/* <h2>Computer Score: {computerScore} / {questionsAnswered} correct</h2> */}
-      <h3>Time Left: {timeLeft}s</h3>
+      
     </div>
   );
   return (
     <div className="App">
       <h1 style={{ color:'#6cc0ae' }}>Geography Trivia</h1>
-      {loading ? (renderLoadingPage() ) : !gameType ? (
+      
+      
+      {loading ? (
+      renderLoadingPage()) : !gameType ? (
+
         <>
+          <p style={{ marginBottom: '30px'}}><b>Directions:</b> For each round, you will be given 10 questions which you have 15 seconds each to answer. You can choose to play by yourself or against a computer opponent. The questions get harder as you go, so good luck! Check the leaderboard at the end to see your progress!</p>
+
           <button onClick={() => setGameType("Single Player")}>Single Player</button>
           <button onClick={() => setGameType("Computer Opponent")}>Play Against Computer</button>
         </>
-      ) : gameType === "Single Player" ? (
-        renderSinglePlayerGame()
       ) : (
-        renderComputerOpponentGame()
+        <>
+          {gameType === "Single Player" ? renderSinglePlayerGame() : renderComputerOpponentGame()}
+        </>
       )}
+      
     </div>
   );
 }
