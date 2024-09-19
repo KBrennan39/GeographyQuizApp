@@ -1,0 +1,72 @@
+
+html, body {
+    height: 100%;
+    margin: 0; /* Remove default margins */
+    background-image: url('images/worldmap.png');
+    background-size: cover;
+}
+.App {
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-color: rgb(236, 239, 240);
+    background-image: url('images/worldmap.png');
+    background-size: cover;
+  }
+  
+  h1 {
+    color: black;
+  }
+  
+  h2 {
+    color: black;
+  }
+  
+  button {
+    background-color: #6cc0ae;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #43927b;
+  }
+  
+  button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .high-scores {
+    font-size: 1.2em;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+  }
+  
+  .high-scores h3 {
+    color: #333;
+  }
+  
+  .high-scores ul {
+    list-style-type: none;
+    padding: 0;
+    
+  }
+  
+  .high-scores li {
+    background-color: #ffffff;
+    margin: 5px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  
