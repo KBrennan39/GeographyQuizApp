@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
 //const mongoose = require('mongoose');
-const scoresRouter = require('./routes/scores');
+//const scoresRouter = require('./routes/scores');
 
 const app = express();
 const port = 3001;
@@ -21,9 +21,8 @@ app.get("/getQuestion", async (req, res) =>{
     // }
     try{
 
-        const response = {"response_code":0,"results":[{"type":"multiple","difficulty":"medium","category":"Geography","question":"On which continent is the country of Angola located?","correct_answer":"Africa","incorrect_answers":["South America","Europe","Asia"]},{"type":"multiple","difficulty":"hard","category":"Geography","question":"Which of these is NOT a province in China?","correct_answer":"Yangtze","incorrect_answers":["Fujian","Sichuan","Guangdong"]},{"type":"multiple","difficulty":"medium","category":"Geography","question":"The historical city Timbuktu is located in which West African country?","correct_answer":"Mali","incorrect_answers":["Senegal","Niger","Burkina Faso"]},{"type":"multiple","difficulty":"easy","category":"Geography","question":"Which of the following Japanese islands is the biggest?","correct_answer":"Honshu","incorrect_answers":["Hokkaido","Shikoku","Kyushu"]},{"type":"multiple","difficulty":"hard","category":"Geography","question":"Which of these cities has a 4&deg; East longitude. ","correct_answer":"Amsterdam","incorrect_answers":["Rio de Janero","Toronto","Hong Kong"]},{"type":"multiple","difficulty":"easy","category":"Geography","question":"Which of these is NOT an Australian state or territory?","correct_answer":"Alberta","incorrect_answers":["New South Wales","Victoria","Queensland"]},{"type":"multiple","difficulty":"medium","category":"Geography","question":"What is the busiest port in Europe?","correct_answer":"Port of Rotterdam","incorrect_answers":["Port of Antwerp","Port of Hamburg","Port of Amsterdam"]},{"type":"multiple","difficulty":"hard","category":"Geography","question":"What is the name of the Canadian national anthem?","correct_answer":"O Canada","incorrect_answers":["O Red Maple","Leaf-Spangled Banner","March of the Puck Drop"]},{"type":"multiple","difficulty":"easy","category":"Geography","question":"What state is the largest state of the United States of America?","correct_answer":"Alaska","incorrect_answers":["California","Texas","Washington"]},{"type":"multiple","difficulty":"medium","category":"Geography","question":"The World Health Organization headquarters is located in which European country?","correct_answer":"Switzerland","incorrect_answers":["United Kingdom","France","Belgium"]}]};
-        
-        res.json(response);
+        const response = await axios.get('https://opentdb.com/api.php?amount=10&category=22&type=multiple')
+        res.json(response.data);
         console.log(response);
     }
     catch (error){
