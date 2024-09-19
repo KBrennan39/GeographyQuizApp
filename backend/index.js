@@ -15,7 +15,7 @@ app.use(express.json());
 app.get("/getQuestion", async (req, res) =>{
 
     const desiredCategory = "geography";
-    const desiredQuestionCount = 10;
+    const desiredQuestionCount = 1;
     let geographyQuestions = [];
     console.log("hi");
     try{

@@ -1,18 +1,19 @@
 
 html, body {
     height: 100%;
-    margin: 0; /* Remove default margins */
-    background-image: url('images/worldmap.png');
-    background-size: cover;
-}
-.App {
     min-height: 100vh;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    padding: 20px;
+    margin: 0; /* Remove default margins */
     background-color: rgb(236, 239, 240);
     background-image: url('images/worldmap.png');
     background-size: cover;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+.App {
+    
+    text-align: center;
+    padding: 5px;
+    
   }
   
   h1 {
@@ -21,6 +22,10 @@ html, body {
   
   h2 {
     color: black;
+  }
+
+  p {
+    margin: 5px;
   }
   
   button {
@@ -34,7 +39,15 @@ html, body {
     margin: 5px;
     transition: background-color 0.3s;
   }
-  
+  .loading-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height of the viewport */
+    background-color: #f0f0f0; /* Background color */
+    font-size: 24px; /* Font size */
+    color: #333; /* Text color */
+  }
   button:hover {
     background-color: #43927b;
   }
@@ -48,12 +61,11 @@ html, body {
     font-size: 1.2em;
     margin-top: 20px;
     padding: 10px;
-    background-color: #e9ecef;
     border-radius: 5px;
   }
   
-  .high-scores h3 {
-    color: #333;
+  .high-scores h2 {
+    color: rgb(0, 0, 0);
   }
   
   .high-scores ul {
@@ -61,12 +73,23 @@ html, body {
     padding: 0;
     
   }
-  
+  .question{
+    background-color: #ffffff;
+    /* margin: 5px 0; */
+    /* margin-left: 20%;
+    margin-right: 20%; */
+    color: #60a8bb;
+    padding: 10px;
+    /* border-radius: 5px; */
+    border: 1px solid #60a8bb;
+  }
   .high-scores li {
     background-color: #ffffff;
     margin: 5px 0;
+    margin-left: 40%;
+    margin-right: 40%;
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid #ddd;
+    border: 1px solid #43927b;
   }
   
