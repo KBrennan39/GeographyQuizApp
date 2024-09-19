@@ -13,12 +13,6 @@ app.use(express.json());
 
 
 app.get("/getQuestion", async (req, res) =>{
-    // const { difficulty } = req.query;
-
-    // const validDifficulties = ['easy', 'medium', 'hard'];
-    // if (!validDifficulties.includes(difficulty)) {
-    //     return res.status(400).json({ error: "Invalid difficulty level" });
-    // }
 
     const desiredCategory = "geography";
     const desiredQuestionCount = 10;
@@ -26,10 +20,7 @@ app.get("/getQuestion", async (req, res) =>{
     console.log("hi");
     try{
 
-        // const response = await axios.get('https://the-trivia-api.com/v2/questions');
 
-        // res.json(response.data)
-        // console.log(response.data);
 
 
         while (geographyQuestions.length < desiredQuestionCount) {
@@ -54,6 +45,14 @@ app.get("/getQuestion", async (req, res) =>{
 
         // If we have more than the desired number of questions, slice the array
         geographyQuestions = geographyQuestions.slice(0, desiredQuestionCount);
+        geographyQuestions.sort((a, b) => {
+            const difficultyOrder = {
+                'easy': 1,
+                'medium': 2,
+                'hard': 3
+            };
+            return difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty];
+        });
         res.json(geographyQuestions);
         console.log(geographyQuestions);
     }
