@@ -23,7 +23,8 @@ function App() {
   const [hintUsed, setHintUsed] = useState(false);
 
 
-
+  //useEffect for updating the remaining time
+  //timer stops when the user answers the question or when it runs out
   useEffect(() => {
     if (timeLeft > 0 && !userAnswer) {
 
@@ -49,7 +50,7 @@ function App() {
 
     return () => clearInterval(timerRef.current); 
   }, [timeLeft, userAnswer]);
-
+  //getQuestions function calls the backend API call and processes the list of geography questions
   const getQuestions = async () => {
     console.log("Entering getQuestions function");
     try {
@@ -77,11 +78,13 @@ function App() {
     console.log(questions);
 
   };
+  //displaying the time bar
   const renderTimerBar = () => (
     <div className="timer-bar-container">
       <div className="timer-bar" style={{ width: timerWidth }} />
     </div>
   );
+  //displaying a loading page for while getQuestions is calling the API
   const renderLoadingPage = () => (
     <div className="loading-page">
       <h2>Loading questions...</h2>
@@ -110,7 +113,7 @@ function App() {
     console.log("answers:" + answers);
   }, [answers]);
 
-
+  //deleting an incorrect answer from the list of answers if the user asks for a hint
   const useHint = () => {
     if (!hintUsed && answers.length > 2) { 
       const incorrectAnswers = answers.filter(answer => answer !== currentQuestion.correctAnswer);
@@ -122,7 +125,7 @@ function App() {
     }
   };
 
-
+  //update variable states based on user's answer
   const handleAnswerClick = (answer) => {
     setUserAnswer(answer);
     setIsCorrect(answer === questions[currentQuestionIndex].correctAnswer);
@@ -134,6 +137,7 @@ function App() {
       computerResponse();
     }
   };
+  //generate a computer answer
   const computerResponse = () => {
     let computerAnswerList = [];
     if (questions[currentQuestionIndex].difficulty==="easy"){
@@ -160,7 +164,7 @@ function App() {
       setComputerScore(computerScore + 1);
     }
   };
-  
+  //reseting variable states between question, and rendering play again page if there are no more questions
   const nextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setUserAnswer(null);
@@ -183,7 +187,7 @@ function App() {
 
     }
   };
-
+  //displaying the high scores
   const printHighScores = () => {
     return (
       <ul>
@@ -195,7 +199,7 @@ function App() {
     );
   }
 
-
+  //reseting variable states
   const playAgain = () => {
     setGameType(null);
     setShowPlayAgain(false);
@@ -211,7 +215,7 @@ function App() {
     setHintUsed(false);
     
   };
-
+  //if the user has answered all 10 questions, display the results and the high scores
   if (showPlayAgain) {
 
     return (
@@ -259,7 +263,7 @@ function App() {
     return cleanedString.replace(/quot/gi, '');
   }
 
-
+  //function for rendering gameplay for a single player
   const renderSinglePlayerGame = () => {
 
     return(
@@ -316,6 +320,7 @@ function App() {
       </div>
     );
   };
+  //function for rendering the game play vs a computer opponent
   const renderComputerOpponentGame = () => (
     <div className="App">
       <h2>User vs Computer</h2>
@@ -366,6 +371,7 @@ function App() {
       
     </div>
   );
+  //First page: user chooses game type
   return (
     <div className="App">
       <h1 style={{ color:'#6cc0ae' }}>Geography Trivia</h1>
