@@ -16,7 +16,6 @@ app.get("/getQuestion", async (req, res) =>{
     const desiredCategory = "geography";
     const desiredQuestionCount = 10;
     let geographyQuestions = [];
-    console.log("hi");
     try{
         while (geographyQuestions.length < desiredQuestionCount) {
             const response = await axios.get('https://the-trivia-api.com/v2/questions');

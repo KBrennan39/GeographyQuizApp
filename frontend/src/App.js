@@ -109,9 +109,7 @@ function App() {
       setTimerWidth("100%");
     }
   }, [currentQuestionIndex, questions])
-  useEffect(() => {
-    console.log("answers:" + answers);
-  }, [answers]);
+
 
   //deleting an incorrect answer from the list of answers if the user asks for a hint
   const useHint = () => {
@@ -257,11 +255,7 @@ function App() {
     );
 
   }
-  function clean(input){
-    const regex = /[^a-zA-Z\s]/g;
-    const cleanedString = input.toString().replace(regex, '');
-    return cleanedString.replace(/quot/gi, '');
-  }
+
 
   //function for rendering gameplay for a single player
   const renderSinglePlayerGame = () => {
@@ -371,7 +365,7 @@ function App() {
       
     </div>
   );
-  //First page: user chooses game type
+  //Defualt page: user chooses game type
   return (
     <div className="App">
       <h1 style={{ color:'#6cc0ae' }}>Geography Trivia</h1>
